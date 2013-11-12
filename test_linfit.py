@@ -8,9 +8,25 @@ import numpy as np
 from scipy.linalg import lstsq
 import time
 import unittest
+import timeit
 
 EPS1 = 1.0e-13
 EPS2 = 1.0e-10
+
+setup = """
+from linfit import linfit
+import numpy as np
+from scipy.linalg import lstsq
+def randomData(xmax, npts):
+    x = np.random.uniform(-xmax, xmax, npts)
+    scale = np.sqrt(xmax)
+    a, b = scale * (np.random.rand(2)-0.5)
+    y = a*x + b + a * scale * np.random.randn(npts)
+    dy = a * scale * (1.0 + np.random.rand(npts))
+    wts = 1./(dy*dy)
+    return x, y, dy, wts
+x, y, dy, wts = randomData(100., npts)
+"""
 
 def randomData(xmax, npts):
     x = np.random.uniform(-xmax, xmax, npts)
@@ -52,7 +68,8 @@ class Testlinfit_PerfectFits(unittest.TestCase):
         x = np.random.uniform(-100.0, 100.0, 10)
         a, b = np.random.rand(2)
         y = a*x+b
-        fit, cvm, redchisq, residuals = linfit(x, y, cov=True, residuals=True)
+        fit, cvm, redchisq, residuals = linfit(x, y, cov=True, chisq=True, 
+                                               residuals=True)
         dfit = [np.sqrt(cvm[i,i]) for i in range(2)]
         diffa, diffb = np.abs(a-fit[0]), np.abs(b-fit[1])
         self.assertTrue(diffa<EPS1 and diffb<EPS1)
@@ -125,114 +142,64 @@ class Testlinfit_CompareWithOtherFitsRunTime(unittest.TestCase):
     # These tests compare the times for linfit to fit data sets to other
     # functions in scipy
 
-    def test_polyfitWtIndTIME(self):
-        # Compare runtime of linfit vs polyfit when relative weighting
-        # (only type of weighting currently available in polyfit) is used.
-        nruns = 10
-        print('\nCompare linfit to polyfit with individually weighted data points')
+    def test_polyfitCompareUniformWt(self):
+        # Compare runtime of linfit vs polyfit with uniform weighting
+        # Relative weighting used since polyfit does not implement absolute weighting
+        print('\nCompare linfit to polyfit with unweighted data points')
+        nreps = 2
+        nruns = 7
         for npts in [10, 100, 1000, 10000, 100000, 1000000]:
-            x, y, dy = randomData(100., npts)
-            wts = 1./dy
-            linfitTIMEmin = 100000.
-            linfitTIMEsum = 0.
-            for i in range(nruns):
-                start = time.time()
-                fit, cvm = linfit(x, y, sigmay=dy, relsigma=True, cov=True)
-                fittime = (time.time() - start)
-                linfitTIMEsum += fittime
-                if fittime<linfitTIMEmin: linfitTIMEmin=fittime
-            polyfitTIMEmin = 100000.
-            polyfitTIMEsum = 0.
-            for i in range(nruns):
-                start = time.clock()
-                pfit, v = polyfit(x, y, 1, w=wts, cov=True)
-                fittime = (time.clock() - start)
-                polyfitTIMEsum += fittime
-                if fittime<polyfitTIMEmin: polyfitTIMEmin=fittime
-            print("{0:7d} data points: linfit is faster than polyfit by {1:0.2g} ({2:0.2g}) times"
-                  .format(npts, polyfitTIMEmin/linfitTIMEmin, polyfitTIMEsum/linfitTIMEsum))
+            setup1 = "npts="+str(npts)+setup
+            timelin = min(timeit.Timer('slope, yint = linfit(x, y)',
+                          setup=setup1).repeat(nreps, nruns))
+            timepoly = min(timeit.Timer('slope, yint = np.polyfit(x, y, 1)',
+                           setup=setup1).repeat(nreps, nruns))
+            print("{0:7d} data points: linfit is faster than numpy.polyfit by {1:0.2g} times"
+                  .format(npts, timepoly/timelin))
 
-    def test_polyfitWtSameTIME(self):
-        # Compare runtime of linfit vs polyfit when relative weighting
-        # (only type of weighting currently available in polyfit) is used.
-        nruns = 10
-        print('\nCompare linfit to polyfit with equally weighted data points')
+    def test_polyfitCompareIndividualWt(self):
+        # Compare runtime of linfit vs polyfit with individually weighted data points
+        # Relative weighting used since polyfit does not implement absolute weighting
+        print('\nCompare linfit to polyfit with relative individually weighted data points')
+        nreps = 2
+        nruns = 7
         for npts in [10, 100, 1000, 10000, 100000, 1000000]:
-            x, y, dy = randomData(100., npts)
-            dy = np.random.rand(1)
-            wts = np.ones(y.size)/dy
-            linfitTIMEmin = 100000.
-            linfitTIMEsum = 0.
-            for i in range(nruns):
-                start = time.clock()
-                fit, cvm = linfit(x, y, sigmay=dy, relsigma=True, cov=True)
-                fittime = (time.clock() - start)
-                linfitTIMEsum += fittime
-                if fittime<linfitTIMEmin: linfitTIMEmin=fittime
-            polyfitTIMEmin = 100000.
-            polyfitTIMEsum = 0.
-            for i in range(nruns):
-                start = time.clock()
-                pfit, v = polyfit(x, y, 1, w=wts, cov=True)
-                fittime = (time.clock() - start)
-                polyfitTIMEsum += fittime
-                if fittime<polyfitTIMEmin: polyfitTIMEmin=fittime
-            print("{0:7d} data points: linfit is faster than polyfit by {1:0.2g} ({2:0.2g}) times"
-                  .format(npts, polyfitTIMEmin/linfitTIMEmin, polyfitTIMEsum/linfitTIMEsum))
+            setup1 = "npts="+str(npts)+setup
+            timelin = min(timeit.Timer('fit, cvm = linfit(x, y, sigmay=dy, relsigma=True, cov=True)',
+                          setup=setup1).repeat(nreps, nruns))
+            timepoly = min(timeit.Timer('pfit, v = np.polyfit(x, y, 1, w=wts, cov=True)',
+                           setup=setup1).repeat(nreps, nruns))
+            print("{0:7d} data points: linfit is faster than numpy.polyfit by {1:0.2g} times"
+                  .format(npts, timepoly/timelin))
 
-    def test_linalg_lstsqNoWtTIME(self):
-        # Compare runtimes of linfit vs scipy.linalg_lstsq when all weighting
-        # is turned off.
-        nruns = 10
-        print('\nCompare linfit to linalg.lstsq without weighting data')
-        for npts in [10, 100, 1000]:
-            x, y, dy = randomData(100., npts)
-            linfitTIMEmin = 100000.
-            linfitTIMEsum = 0.
-            for i in range(nruns):
-                start = time.clock()
-                fit = linfit(x, y)
-                fittime = (time.clock() - start)
-                linfitTIMEsum += fittime
-                if fittime<linfitTIMEmin: linfitTIMEmin=fittime
-            linalgfitTIMEmin = 100000.
-            linalgfitTIMEsum = 0.
-            for i in range(nruns):
-                start = time.clock()
-                X = np.vstack([np.ones(npts), x]).T
-                cNoWts, resid, rank, sigma = lstsq(X, y)
-                fittime = (time.clock() - start)
-                linalgfitTIMEsum += fittime
-                if fittime<linalgfitTIMEmin: linalgfitTIMEmin=fittime
-            print("{0:7d} data points: linfit is faster than linalg.lstsq by {1:0.4g} ({2:0.4g}) times"
-                  .format(npts, linalgfitTIMEsum/linfitTIMEmin, linalgfitTIMEsum/linfitTIMEsum))
+    def test_linalg_lstsqCompareUniformWt(self):
+        # Compare runtime of linfit vs scipy.linalg.lstsq with no weighting
+        print('\nCompare linfit to scipy.linalg.lstsq with unweighted data points')
+        nreps = 2
+        nruns = 7
+        for npts in [10, 100, 1000, 10000, 100000, 1000000]:
+            setup1 = "npts="+str(npts)+setup
+            timelin = min(timeit.Timer('slope, yint = linfit(x, y)',
+                          setup=setup1).repeat(nreps, nruns))
+            timelinalg = min(timeit.Timer('X = np.vstack([np.ones(npts), x]).T\ncNoWts, resid, rank, sigma = lstsq(X, y)',
+                           setup=setup1).repeat(nreps, nruns))
+            print("{0:7d} data points: linfit is faster than scipy.linalg.lstsq by {1:0.2g} times"
+                  .format(npts, timelinalg/timelin))
 
-    def test_linalg_lstsqWtTIME(self):
-        # Compare runtimes of linfit vs scipy.linalg_lstsq using weighting
-        nruns = 10
-        print('\nCompare linfit to linalg.lstsq with weighting data')
-        for npts in [10, 100, 1000]:
-            x, y, dy = randomData(100., npts)
-            linfitTIMEmin = 100000.
-            linfitTIMEsum = 0.
-            for i in range(nruns):
-                start = time.clock()
-                fit = linfit(x, y, sigmay=dy)
-                fittime = (time.clock() - start)
-                linfitTIMEsum += fittime
-                if fittime<linfitTIMEmin: linfitTIMEmin=fittime
-            linalgfitTIMEmin = 100000.
-            linalgfitTIMEsum = 0.
-            for i in range(nruns):
-                start = time.clock()
-                X = np.vstack([np.ones(npts), x]).T
-                A = X/np.array(zip(dy,dy))
-                cWts, resid, rank, sigma = lstsq(A, y/dy)
-                fittime = (time.clock() - start)
-                linalgfitTIMEsum += fittime
-                if fittime<linalgfitTIMEmin: linalgfitTIMEmin=fittime
-            print("{0:7d} data points: linfit is faster than linalg.lstsq by {1:0.4g} ({2:0.4g}) times"
-                  .format(npts, linalgfitTIMEsum/linfitTIMEmin, linalgfitTIMEsum/linfitTIMEsum))
+    def test_linalg_lstsqCompareIndividualWt(self):
+        # Compare runtime of linfit vs scipy.linalg.lstsq with individual weighting
+        print('\nCompare linfit to scipy.linalg.lstsq with relative individually weighted data points')
+        nreps = 2
+        nruns = 7
+        for npts in [10, 100, 1000, 10000]:
+            setup1 = "npts="+str(npts)+setup
+            timelin = min(timeit.Timer('fit, cvm = linfit(x, y, sigmay=dy, relsigma=True, cov=True)',
+                          setup=setup1).repeat(nreps, nruns))
+            stmt='X = np.vstack([np.ones(npts), x]).T\nA = X/np.array(zip(dy,dy))\ncWts, resid, rank, sigma = lstsq(A, y/dy)'
+            timelinalg = min(timeit.Timer(stmt,
+                           setup=setup1).repeat(nreps, nruns))
+            print("{0:7d} data points: linfit is faster than scipy.linalg.lstsq by {1:0.3g} times"
+                  .format(npts, timelinalg/timelin))
 
             
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 import numpy as np
 
-def linfit(x, y, sigmay=None, relsigma=True, cov=False, residuals=False):
+def linfit(x, y, sigmay=None, relsigma=True, cov=False, chisq=False, residuals=False):
     """
     Least squares linear fit.
     
@@ -28,8 +28,10 @@ def linfit(x, y, sigmay=None, relsigma=True, cov=False, residuals=False):
         sigmay represents absolute undertainties.
     cov : bool, optional
         If True, calculate and return the covarience matrix.
+    chisq : bool, optional
+        If True, calculate and return redchisq.
     residuals : bool, optional
-        If True, calculate and return redchisq and residuals.
+        If True, calculate and return residuals.
     
     Returns
     -------
@@ -44,13 +46,12 @@ def linfit(x, y, sigmay=None, relsigma=True, cov=False, residuals=False):
         and `b`. Off diagonal elements (equal to each other) are the
         covarience between the fitting parameters `a` and `b`.
           
-    redchisq : float : returned only if residuals=True
-        Reduced value of chi-squared goodness of fit parameter where n is the
-        number of data points in `x` or `y`.
+    redchisq : float : returned only if chisq=True
+        Reduced chi-squared goodness of fit parameter.
         
     residuals : ndarray of floats : returned only if residuals=True
-        Length n array of the differences `y-(ax+b)` between `y`-data and the fitted
-        data `ax + b`.
+        Length n array of the differences `y-(ax+b)` between `y`-data and the
+        fitted data `ax + b`.
 
     Raises
     ------
@@ -109,12 +110,14 @@ def linfit(x, y, sigmay=None, relsigma=True, cov=False, residuals=False):
     elements are equal and give the cross correlation between the two fitting
     parameters `a` and `b`.
     
-    Setting one or both of the input parameters, `cov` or `residuals`, to 
-    False makes the program run faster, usually by a factor of 2 to 3.
-    Setting `relsigma` = False also makes the program run faster.
+    linfit runs faster, by a factor of 2 to 3, if calculation of the residuals
+    is suppressed letting `cov`, `chisq`, and `residuals` remain False (the
+    default setting).
     
     Fitting a straight line to a single set of `(x, y)` data using ``linfit`` is
-    typically many times faster than using either ``polyfit`` or ``linalg.lstsq``.
+    typically 2 to 10 times faster than using either ``polyfit`` or 
+    ``linalg.lstsq``, especially when weighting is used and for very large data
+    sets.
     
     References
     ----------
@@ -153,7 +156,7 @@ def linfit(x, y, sigmay=None, relsigma=True, cov=False, residuals=False):
     enter sigmay as an array.
     
     >>> dy = np.array([0.18, 0.13, 0.15, 0.17])
-    >>> fit, cvm, redchisq, resids = linfit(x, y, cov=True, sigmay=dy, relsigma=False, residuals=True)
+    >>> fit, cvm, redchisq, resids = linfit(x, y, cov=True, sigmay=dy, relsigma=False, chisq=True, residuals=True)
     >>> print("a = {0:0.2f}, b = {1:0.2f}".format(fit[0], fit[1]))
     a = 0.98, b = -0.91
     >>> dfit = [np.sqrt(cvm[i,i]) for i in range(2)]
@@ -174,7 +177,7 @@ def linfit(x, y, sigmay=None, relsigma=True, cov=False, residuals=False):
     setting `relsigma` = True.
     
     >>> dy = np.array([1.0, 0.75, 0.75, 1.25])
-    >>> fit, cvm, redchisq, resids = linfit(x, y, cov=True, sigmay=dy, relsigma=True, residuals=True)
+    >>> fit, cvm, redchisq = linfit(x, y, cov=True, sigmay=dy, relsigma=True, chisq=True)
     >>> print("a = {0:0.2f}, b = {1:0.2f}".format(fit[0], fit[1]))
     a = 0.97, b = -0.91
     >>> dfit = [np.sqrt(cvm[i,i]) for i in range(2)]
@@ -196,12 +199,12 @@ def linfit(x, y, sigmay=None, relsigma=True, cov=False, residuals=False):
 
     x = np.asarray(x)
     y = np.asarray(y)
-    if sigmay is None: sigmay = 1.0
-    sigmay = np.asarray(sigmay)
     if x.size != y.size:
         raise TypeError('Expected x and y to have same length')
     if x.size <= 2:
         raise TypeError('Expected x and y length > 2')
+    if sigmay is None: sigmay = 1.0
+    sigmay = np.asarray(sigmay)
 
     if sigmay.size == 1:
         sigy = float(sigmay)    # convert 0-d array to a float
@@ -235,15 +238,18 @@ def linfit(x, y, sigmay=None, relsigma=True, cov=False, residuals=False):
             cvm00 *= redchisq
             cvm01 *= redchisq
             cvm11 *= redchisq
-        returns = [returns]
-        returns += [np.array([[cvm00, cvm01],
-                              [cvm01, cvm11]])]
+        returns = [returns] + [np.array([[cvm00, cvm01],
+                                         [cvm01, cvm11]])]
 
-    if residuals is True:
+    if residuals or chisq is True:
         if relsigma is False:
             redchisq, resids = _resids(x, y, sigmay, slope, yint)
-        if type(returns) is not list: returns = [returns]
-        returns += [redchisq, resids]
+        if type(returns) is not list:
+            returns = [returns]
+        if chisq is True:
+            returns += [redchisq]
+        if residuals is True:
+            returns += [resids]
 
     return returns
 
@@ -255,3 +261,4 @@ def _resids(x, y, sigmay, slope, yint):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+

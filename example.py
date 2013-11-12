@@ -5,12 +5,12 @@ from linfit import linfit
 
 # data set for linear fitting 
 x = np.array([2.3, 4.7, 7.1, 9.6, 11.7, 14.1, 16.4, 18.8, 21.1, 23.0])
-y = np.array([-25., 3., 114., 110., 234., 304., 271., 322., 446., 397.])
-sigmay = np.array([15., 30., 34., 37., 40., 50., 38., 28., 47., 30.])
+y = np.array([-25., 3., 110., 110., 230., 300., 270., 320., 450., 400.])
+sigmay = np.array([15., 30., 30., 40., 40., 50., 40., 30., 50., 30.])
 
 # Fit linear data set with weighting
-fit, cvm, redchisq, residuals = linfit(x, y, sigmay, cov=True,
-                                        relsigma=False, residuals=True)
+fit, cvm, redchisq, residuals = linfit(x, y, sigmay, cov=True, relsigma=False, 
+                                       chisq=True, residuals=True)
 dfit = [np.sqrt(cvm[i,i]) for i in range(2)]
 
 # Open figure window for plotting data with linear fit
