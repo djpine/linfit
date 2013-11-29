@@ -27,7 +27,8 @@ def linfit(x, y, sigmay=None, relsigma=True, cov=False, chisq=False, residuals=F
         matrix is calculated (provided `cov` = True) using sigmay assuming
         sigmay represents absolute undertainties.
     cov : bool, optional
-        If True, calculate and return the covarience matrix.
+        If True, calculate and return the 2x2 covarience matrix of the fitting
+        parameters.
     chisq : bool, optional
         If True, calculate and return redchisq.
     residuals : bool, optional
@@ -40,11 +41,11 @@ def linfit(x, y, sigmay=None, relsigma=True, cov=False, chisq=False, residuals=F
         `y`-intercept) for the input data arrays `x` and `y`
        
     cvm : array, shape (2,2) : returned only if cov=True
-        Covarience matrix.  Diagonal elements are estimated variances of the
-        fitting parameters a and b; square roots of the diagonal elements thus
-        provide estimates of the uncertainties in the fitting parameters `a`
-        and `b`. Off diagonal elements (equal to each other) are the
-        covarience between the fitting parameters `a` and `b`.
+        Covarience matrix of the fitting parameters.  Diagonal elements are
+        estimated variances of the fitting parameters a and b; square roots of
+        the diagonal elements thus provide estimates of the uncertainties in the
+        fitting parameters `a` and `b`. Off diagonal elements (equal to each
+        other) are the covarience between the fitting parameters `a` and `b`.
           
     redchisq : float : returned only if chisq=True
         Reduced chi-squared goodness of fit parameter.
