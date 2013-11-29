@@ -1,12 +1,11 @@
 """ Unit tests for linfit
 Author: David Pine
-April 2013
+November 2013
 """
 from linfit import linfit
 from numpy import polyfit
 import numpy as np
 from scipy.linalg import lstsq
-import time
 import unittest
 import timeit
 
@@ -17,6 +16,7 @@ setup = """
 from linfit import linfit
 import numpy as np
 from scipy.linalg import lstsq
+from scipy.stats import linregress
 def randomData(xmax, npts):
     x = np.random.uniform(-xmax, xmax, npts)
     scale = np.sqrt(xmax)
@@ -201,6 +201,20 @@ class Testlinfit_CompareWithOtherFitsRunTime(unittest.TestCase):
             print("{0:7d} data points: linfit is faster than scipy.linalg.lstsq by {1:0.3g} times"
                   .format(npts, timelinalg/timelin))
 
+    def test_linregressCompareNoWt(self):
+        # Compare runtime of linfit with scipy.stats.linregress
+        print('\nCompare linfit to scipy.stats.linregress with unweighted data points')
+        nreps = 2
+        nruns = 7
+        for npts in [10, 100, 1000, 10000, 100000, 1000000]:
+            setup1 = "npts="+str(npts)+setup
+            timelin = min(timeit.Timer('fit = linfit(x, y)',
+                          setup=setup1).repeat(nreps, nruns))
+            timelinreg = min(timeit.Timer('slope, intercept, r_value, p_value, std_err = linregress(x, y)',
+                             setup=setup1).repeat(nreps, nruns))
+            print("{0:7d} data points: linfit is faster than scipy.stats.linregress by {1:0.2g} times"
+                  .format(npts, timelinreg/timelin))
+            
             
 if __name__ == '__main__':
     import sys
