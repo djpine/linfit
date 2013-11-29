@@ -1,6 +1,8 @@
 linfit
 ======
 
+[Examples here](http://nbviewer.ipython.org/urls/raw.github.com/djpine/linfit/master/linfit.ipynb)
+
 Least squares linear fit for numpy library of Python
 
     Least squares linear fit.
