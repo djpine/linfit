@@ -30,9 +30,12 @@ Least squares linear fit for numpy library of Python
         matrix is calculated (provided `cov` = True) using sigmay assuming
         sigmay represents absolute undertainties.
     cov : bool, optional
-        If True, calculate and return the covarience matrix.
+        If True, calculate and return the 2x2 covarience matrix of the fitting
+        parameters.
+    chisq : bool, optional
+        If True, calculate and return redchisq.
     residuals : bool, optional
-        If True, calculate and return redchisq and residuals.
+        If True, calculate and return residuals.
     
     Returns
     -------
@@ -41,19 +44,18 @@ Least squares linear fit for numpy library of Python
         `y`-intercept) for the input data arrays `x` and `y`
        
     cvm : array, shape (2,2) : returned only if cov=True
-        Covarience matrix.  Diagonal elements are estimated variances of the
-        fitting parameters a and b; square roots of the diagonal elements thus
-        provide estimates of the uncertainties in the fitting parameters `a`
-        and `b`. Off diagonal elements (equal to each other) are the
-        covarience between the fitting parameters `a` and `b`.
+        Covarience matrix of the fitting parameters.  Diagonal elements are
+        estimated variances of the fitting parameters a and b; square roots of
+        the diagonal elements thus provide estimates of the uncertainties in the
+        fitting parameters `a` and `b`. Off diagonal elements (equal to each
+        other) are the covarience between the fitting parameters `a` and `b`.
           
-    redchisq : float : returned only if residuals=True
-        Reduced value of chi-squared goodness of fit parameter where n is the
-        number of data points in `x` or `y`.
+    redchisq : float : returned only if chisq=True
+        Reduced chi-squared goodness of fit parameter.
         
     residuals : ndarray of floats : returned only if residuals=True
-        Length n array of the differences `y-(ax+b)` between `y`-data and the fitted
-        data `ax + b`.
+        Length n array of the differences `y-(ax+b)` between `y`-data and the
+        fitted data `ax + b`.
 
     Raises
     ------
@@ -112,12 +114,14 @@ Least squares linear fit for numpy library of Python
     elements are equal and give the cross correlation between the two fitting
     parameters `a` and `b`.
     
-    Setting one or both of the input parameters, `cov` or `residuals`, to 
-    False makes the program run faster, usually by a factor of 2 to 3.
-    Setting `relsigma` = False also makes the program run faster.
+    linfit runs faster, by a factor of 2 to 3, if calculation of the residuals
+    is suppressed letting `cov`, `chisq`, and `residuals` remain False (the
+    default setting).
     
     Fitting a straight line to a single set of `(x, y)` data using ``linfit`` is
-    typically many times faster than using either ``polyfit`` or ``linalg.lstsq``.
+    typically 2 to 10 times faster than using either ``polyfit`` or 
+    ``linalg.lstsq``, especially when weighting is used and for very large data
+    sets.
     
     References
     ----------
@@ -156,7 +160,7 @@ Least squares linear fit for numpy library of Python
     enter sigmay as an array.
     
     >>> dy = np.array([0.18, 0.13, 0.15, 0.17])
-    >>> fit, cvm, redchisq, resids = linfit(x, y, cov=True, sigmay=dy, relsigma=False, residuals=True)
+    >>> fit, cvm, redchisq, resids = linfit(x, y, cov=True, sigmay=dy, relsigma=False, chisq=True, residuals=True)
     >>> print("a = {0:0.2f}, b = {1:0.2f}".format(fit[0], fit[1]))
     a = 0.98, b = -0.91
     >>> dfit = [np.sqrt(cvm[i,i]) for i in range(2)]
@@ -177,7 +181,7 @@ Least squares linear fit for numpy library of Python
     setting `relsigma` = True.
     
     >>> dy = np.array([1.0, 0.75, 0.75, 1.25])
-    >>> fit, cvm, redchisq, resids = linfit(x, y, cov=True, sigmay=dy, relsigma=True, residuals=True)
+    >>> fit, cvm, redchisq = linfit(x, y, cov=True, sigmay=dy, relsigma=True, chisq=True)
     >>> print("a = {0:0.2f}, b = {1:0.2f}".format(fit[0], fit[1]))
     a = 0.97, b = -0.91
     >>> dfit = [np.sqrt(cvm[i,i]) for i in range(2)]
@@ -195,5 +199,5 @@ Least squares linear fit for numpy library of Python
         
     .. image:: example.png
         :scale: 75 %
-    """
+
 
