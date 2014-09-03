@@ -3,9 +3,9 @@
 Fit a straight line 
 
 ```
-f(x) = a + bx to (x, y) 
+f(x) = a + bx 
 ```
-data points. Returns
+to (x, y)  data points. Returns
 coefficients a and b that minimize the squared error.
 
 [Click here for linfit docstring](http://htmlpreview.github.com/?https://github.com/djpine/linfit/blob/master/html/linfit.html)
