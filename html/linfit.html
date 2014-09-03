@@ -1,0 +1,345 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>linfit Module &mdash; LinearFitting 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="LinearFitting 1.0 documentation" href="index.html" />
+    <link rel="prev" title="Welcome to LinearFitting’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to LinearFitting’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">LinearFitting 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-linfit">
+<span id="linfit-module"></span><h1>linfit Module<a class="headerlink" href="#module-linfit" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="linfit.linfit">
+<tt class="descclassname">linfit.</tt><tt class="descname">linfit</tt><big>(</big><em>x</em>, <em>y</em>, <em>sigmay=None</em>, <em>relsigma=True</em>, <em>return_all=False</em><big>)</big><a class="headerlink" href="#linfit.linfit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Least squares fit to straight line</p>
+<p>Fit a straight line <cite>f(x) = a + bx</cite> to (<cite>x, y</cite>) data points. Returns
+coefficients <cite>a</cite> and <cite>b</cite> that minimize the squared error.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>x</strong> : array_like</p>
+<blockquote>
+<div><p>one dimensional array of x data with n&gt;2 data points.</p>
+</div></blockquote>
+<p><strong>y</strong> : array_like</p>
+<blockquote>
+<div><p>one dimensional array of y data with n&gt;2 data points.</p>
+</div></blockquote>
+<p><strong>sigmay</strong> : NoneType or float or array_like, optional</p>
+<blockquote>
+<div><p>One dimensional array of uncertainties (errors) in y data or a single
+positive number if all uncertainties are the same.  sigmay determines
+the weighting in the least squares minimization. Leaving 
+<tt class="docutils literal"><span class="pre">sigmay=None</span></tt> uses no weighting and is equivalent to <tt class="docutils literal"><span class="pre">sigmay=1</span></tt>.</p>
+</div></blockquote>
+<p><strong>relsigma</strong> : bool, optional</p>
+<blockquote>
+<div><p>If <tt class="docutils literal"><span class="pre">relsigma=True</span></tt>, the residuals are used to scale the covariance
+matrix.  Use this option if you do not know the absolute uncertainties
+(sigmay) in the data but still want a covariance matrix whose entries
+give meaningful estimates of the uncertainties in the fitting
+parameters <cite>a</cite> and <cite>b</cite> (from <cite>f = a + bx</cite>).  If <tt class="docutils literal"><span class="pre">relsigma=False</span></tt>, the
+covariance matrix is calculated using sigmay as absolute estimates of
+the uncertainties.</p>
+</div></blockquote>
+<p><strong>return_all</strong> : bool, optional</p>
+<blockquote>
+<div><p>If False, return <tt class="docutils literal"><span class="pre">fit</span></tt> and <tt class="docutils literal"><span class="pre">cvm</span></tt>. If True, return <tt class="docutils literal"><span class="pre">fit</span></tt>, <tt class="docutils literal"><span class="pre">cvm</span></tt>,
+and <tt class="docutils literal"><span class="pre">lfinfo</span></tt>. (see Returns below).</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>fit</strong> : array([a,b]) ndarray of floats</p>
+<blockquote>
+<div><p>The best fit model parameters <tt class="docutils literal"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">fit[0]</span></tt> (the slope) and 
+<tt class="docutils literal"><span class="pre">b</span> <span class="pre">=</span> <span class="pre">fit[1]</span></tt> (the y-intercept) for the input data arrays <cite>x</cite> and <cite>y</cite></p>
+</div></blockquote>
+<p><strong>cvm</strong> : array, shape (2,2)</p>
+<blockquote>
+<div><p>Covarience matrix of the fitting parameters.  Diagonal elements are
+estimated variances of the fitting parameters a and b; square roots of
+the diagonal elements thus provide estimates of the uncertainties in
+the fitting parameters a and b. Off diagonal elements (equal to each
+other) are the covarience between the fitting parameters a and b.</p>
+</div></blockquote>
+<p><strong>lfinfo</strong> : bunch dictionary</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>dictionary of optional outputs:</dt>
+<dd><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">lfinfo.rchisq</span></tt></dt>
+<dd><p class="first last">The reduced chi-sqaured value</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">lfinfo.resids</span></tt></dt>
+<dd><p class="first last">array of residuals = <span class="math">\(y_i - (ax_i+b)\)</span></p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">lfinfo.fiterr</span></tt></dt>
+<dd><p class="first last">array([da, db]) uncertainties in the fitting parameters a and b</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><p class="first"><strong>TypeError</strong> : if <cite>x</cite> and <cite>y</cite> have different lengths</p>
+<p><strong>TypeError</strong> : If <cite>x</cite> and <cite>y</cite> have 2 or fewer elements</p>
+<p class="last"><strong>TypeError</strong> : If sigmay length is not 1 or the same as <cite>y</cite></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">numpy.polyfit</span></tt></dt>
+<dd>Least squares fit to polynomial.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">numpy.linalg.lstsq</span></tt></dt>
+<dd>Least-squares solution to a linear matrix equation.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">scipy.optimize.curve_fit</span></tt></dt>
+<dd>Non-linear least squares to fit a function, f, to data.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">scipy.stats.linregress</span></tt></dt>
+<dd>Linear regression with stats for social sciences.</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>By default, <tt class="docutils literal"><span class="pre">linfit</span></tt> returns optimal fitting parameters <tt class="docutils literal"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">fit[0]</span></tt>
+and <tt class="docutils literal"><span class="pre">b</span> <span class="pre">=</span> <span class="pre">fit[1]</span></tt> without weighting of the data.  In that case, linfit
+minimizes the squared error</p>
+<div class="math">
+\[E = \sum_{i=0}^n [y_i - (a x_i + b)]^2\]</div>
+<p>If <cite>sigmay</cite> is set equal to the uncertainties in the <cite>y</cite> data points, then
+<tt class="docutils literal"><span class="pre">linfit</span></tt> minimizes the chi-squared sum</p>
+<div class="math">
+\[\chi^2 = \sum_{i=0}^n \left[ \frac{y_i-(a x_i + b)}{\sigma_i}
+\right]^2\]</div>
+<p>where <span class="math">\(\sigma_i\)</span> is given by sigmay, the one-standard-deviation
+uncertainty (or &#8220;error&#8221;) of <span class="math">\(y_i\)</span>.  <cite>sigmay</cite> can be either a single
+number that gives the uncertainty for all elements of <cite>y</cite>, or it can be an
+array of the same length as <cite>y</cite> that gives the &#8220;error&#8221; for each element of 
+<cite>y</cite>. <cite>rchisq</cite> is <span class="math">\(\chi^2/(n-2)\)</span> where <span class="math">\(n\)</span> is the number of
+data points (the length of <cite>x</cite> or <cite>y</cite>).</p>
+<p>If <cite>relsigma</cite> is False, then the uncertainties <cite>sigmay</cite> in <cite>y</cite> are
+assumed to be the absolute one-standard-deviation uncertainties in <cite>y</cite>.
+In this case, the reduced chi-squared value <span class="math">\(\chi^2/(n-2)\)</span> provides a
+measure of the goodness of the fit.  If it is near 1, then the linear
+fitting model is considered to be good and the values of the covariance
+matrix are appropriately scaled.  In particular, the square root of the
+diagonal elements of the covariance matrix give the estimated uncertainty
+in the fitting parameters <cite>a</cite> and <cite>b</cite>.  See References <a class="reference internal" href="#r1">[R1]</a> and <a class="reference internal" href="#r2">[R2]</a> below
+for more information.</p>
+<p>If <cite>relsigma</cite> is True, then the uncertainties <cite>sigmay</cite> in <cite>y</cite> are
+considered to be only relative uncertainties.  They are used to weight
+the data for the fit, but in this case, the covariance matrix is rescaled
+using the residuals between the fit and the data.  In this case, the
+reduced chi-squared value <span class="math">\(\chi^2/(n-2)\)</span> does not provide a measure
+of the goodness of the fit.  Nevertheless, the diagonal elements of the
+rescaled covariance matrix (returned by <tt class="docutils literal"><span class="pre">linfit</span></tt>) give the estimated
+uncertainty in the fitting parameters <cite>a</cite> and <cite>b</cite>.</p>
+<p>The covariance matrix is a 2x2 symmetric matrix where the diagonal elements
+are the variance of the fitting parameters.  Their square roots provide
+estimates of the uncertainties in the fitting parameters.  The off-diagonal
+elements are equal and give the cross correlation between the two fitting
+parameters <cite>a</cite> and <cite>b</cite>.</p>
+<p>Speed: <tt class="docutils literal"><span class="pre">linfit</span></tt> runs faster, by a factor of 2 to 3, if calculation of the
+residuals is suppressed by setting <tt class="docutils literal"><span class="pre">relsigma=False</span></tt> and 
+<tt class="docutils literal"><span class="pre">return_all=False</span></tt>.</p>
+<p>Fitting a straight line to a single set of (<cite>x, y</cite>) data using <tt class="docutils literal"><span class="pre">linfit</span></tt>
+is typically 2 to 10 times faster than using either <tt class="docutils literal"><span class="pre">polyfit</span></tt> or 
+<tt class="docutils literal"><span class="pre">linalg.lstsq</span></tt>, especially when weighting is used and for very large data
+sets.</p>
+<p class="rubric">References</p>
+<table class="docutils citation" frame="void" id="r1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[R1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id3">2</a>)</em> An Introduction to Error Analysis, 2nd Ed. by John R. Taylor
+(University Science Books, 1997).</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="r2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[R2]</td><td><em>(<a class="fn-backref" href="#id2">1</a>, <a class="fn-backref" href="#id4">2</a>)</em> Numerical Recipes, The Art of Scientific Computing, 3rd Edition
+by W.H. Press, S. A. Teukolsky, W. T. Vetterling, &amp; B. P. Flannery
+(Cambridge University Press, 2007).</td></tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>Fit a line, <cite>y = ax + b</cite>, through some noisy (<cite>x</cite>, <cite>y</cite>) data-points without
+any weighting (<tt class="docutils literal"><span class="pre">sigmay</span> <span class="pre">=</span> <span class="pre">None</span></tt>) to obtain the fitting parameters: the
+slope <cite>a</cite> and the <cite>y</cite>-intercept <cite>b</cite>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span><span class="p">,</span> <span class="n">cvm</span> <span class="o">=</span> <span class="n">linfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&quot;a = {0:0.2f}, b = {1:0.2f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fit</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fit</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="go">a = 1.00, b = -0.95</span>
+</pre></div>
+</div>
+<p>When uncertainties sigmay are left unspecified, meaningful estimates of
+the uncertainties da and db in the fitting parameters a and b
+are given by the square roots of the diagonals of the covariance matrix
+cvm, provided <tt class="docutils literal"><span class="pre">relsigma</span> <span class="pre">=</span> <span class="pre">True</span></tt> (the default state).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">dfit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">cvm</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&quot;da = {0:0.2f}, db = {1:0.2f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dfit</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dfit</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="go">da = 0.07, db = 0.13</span>
+</pre></div>
+</div>
+<p>A better practice is to supply estimates of the uncertainties in the
+input argument sigmay.  sigmay can be a single float, if the
+uncertainties are the same for all data points, or it can be an array, if
+the uncertainties for different data points are different.  Here sigmay is
+entered as an array.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">dy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.18</span><span class="p">,</span> <span class="mf">0.13</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.17</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span><span class="p">,</span> <span class="n">cvm</span> <span class="o">=</span> <span class="n">linfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigmay</span><span class="o">=</span><span class="n">dy</span><span class="p">,</span> <span class="n">relsigma</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&quot;a = {0:0.2f}, b = {1:0.2f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fit</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fit</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="go">a = 0.98, b = -0.91</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dfit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">cvm</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&quot;da = {0:0.2f}, db = {1:0.2f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dfit</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dfit</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="go">da = 0.08, db = 0.14</span>
+</pre></div>
+</div>
+<p>Addition information about the fit is calculated and returned as a bunch
+dictionary if the optional argument <tt class="docutils literal"><span class="pre">return_all=True</span></tt>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span><span class="p">,</span> <span class="n">cvm</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">linfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigmay</span><span class="o">=</span><span class="n">dy</span><span class="p">,</span> <span class="n">relsigma</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">return_all</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&quot;reduced chi-squared = {0:0.2f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">rchisq</span><span class="p">))</span>
+<span class="go">reduced chi-squared = 1.21</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">resids</span><span class="p">)</span>
+<span class="go">[-0.08856653  0.12781099 -0.1558115   0.06056602]</span>
+</pre></div>
+</div>
+<p>The value of reduced chi-squared (rchisq) is 1.21 indicating that a
+linear model is valid for these data.  The residuals <span class="math">\(y_i - (a+bx_i)\)</span>
+are given by the output resids.</p>
+<p>If absolute estimates of the uncertainties are not available, but relative
+estimates of the uncertainties are known, a fit can be obtained with 
+reasonable estimates of the uncertainties in the fitting parameters by
+setting <tt class="docutils literal"><span class="pre">relsigma</span> <span class="pre">=</span> <span class="pre">True</span></tt>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">dy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span><span class="p">,</span> <span class="n">cvm</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">linfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigmay</span><span class="o">=</span><span class="n">dy</span><span class="p">,</span> <span class="n">relsigma</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">return_all</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&quot;a = {0:0.2f}, b = {1:0.2f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fit</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fit</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="go">a = 0.97, b = -0.91</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&quot;da = {0:0.2f}, db = {1:0.2f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">fiterr</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">info</span><span class="o">.</span><span class="n">fiterr</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="go">da = 0.09, db = 0.16</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">da</span><span class="p">,</span> <span class="n">db</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">cvm</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&quot;da = {0:0.2f}, db = {1:0.2f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="n">db</span><span class="p">))</span>
+<span class="go">da = 0.09, db = 0.16</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s">&quot;reduced chi-squared = {0:0.2f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">rchisq</span><span class="p">))</span>
+<span class="go">reduced chi-squared = 0.04</span>
+</pre></div>
+</div>
+<p>In this case, the value rchisq is meaningless, because only the
+relative, rather than the absolute uncertainties are known.  Nevertheless,
+by setting <tt class="docutils literal"><span class="pre">relsigma</span> <span class="pre">=</span> <span class="pre">True</span></tt>, reasonable estimates for the uncertainties
+in the fitting parameters are obtained.  Note that info.fiterr provides the
+same information, the estimated uncertainties in the fitting parameters,
+obtained by taking the square roots of the diagonal elements of the
+covariance matrix.</p>
+<p>Illustration:</p>
+<a class="reference internal image-reference" href="_images/example.png"><img alt="_images/example.png" src="_images/example.png" style="width: 600.0px; height: 600.0px;" /></a>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to LinearFitting&#8217;s documentation!</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/linfit.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to LinearFitting’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">LinearFitting 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, David Pine.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
