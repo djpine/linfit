@@ -140,7 +140,7 @@ def linfit(x, y, sigmay=None, relsigma=True, return_all=False):
     >>> x = np.array([0, 1, 2, 3])
     >>> y = np.array([-1, 0.2, 0.9, 2.1])
     >>> fit, cvm = linfit(x, y)
-    >>> print("a = {0:0.2f}, b = {1:0.2f}".format(fit[0], fit[1]))
+    >>> print('a = {0:0.2f}, b = {1:0.2f}'.format(fit[0], fit[1]))
     a = 1.00, b = -0.95
 
     When uncertainties sigmay are left unspecified, meaningful estimates of
@@ -149,7 +149,7 @@ def linfit(x, y, sigmay=None, relsigma=True, return_all=False):
     cvm, provided ``relsigma = True`` (the default state).
     
     >>> dfit = np.sqrt(np.diag(cvm))
-    >>> print("da = {0:0.2f}, db = {1:0.2f}".format(dfit[0], dfit[1]))
+    >>> print('da = {0:0.2f}, db = {1:0.2f}'.format(dfit[0], dfit[1]))
     da = 0.07, db = 0.13
     
     A better practice is to supply estimates of the uncertainties in the
@@ -274,7 +274,7 @@ def _resids(x, y, sigmay, slope, yint):  # speed penalty if called
     return rchisq, resids
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     import doctest
 
     doctest.testmod()
