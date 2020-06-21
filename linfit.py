@@ -1,6 +1,7 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
 
+
 def linfit(x, y, sigmay=None, relsigma=True, return_all=False):
     """
     Least squares fit to straight line
@@ -218,32 +219,32 @@ def linfit(x, y, sigmay=None, relsigma=True, return_all=False):
         s = y.size
         sx = x.sum()
         sy = y.sum()
-        t = x-sx/s
-        stt = (t*t).sum()
-        slope = (t*y).sum()/stt
-        yint = (sy - sx * slope)/s
-        sigy2 = float(sigmay)**2
-        cvm00 = sigy2/stt
-        cvm01 = -cvm00*sx/s
-        cvm11 = (sigy2-sx*cvm01)/s
+        t = x - sx / s
+        stt = (t * t).sum()
+        slope = (t * y).sum() / stt
+        yint = (sy - sx * slope) / s
+        sigy2 = float(sigmay) ** 2
+        cvm00 = sigy2 / stt
+        cvm01 = -cvm00 * sx / s
+        cvm11 = (sigy2 - sx * cvm01) / s
     else:
         if sigmay.size != y.size:
             raise TypeError('Expected sigmay size to be 1 or same as y')
-        wt = 1./(sigmay*sigmay)
+        wt = 1. / (sigmay * sigmay)
         s = wt.sum()
-        sx = (x*wt).sum()
-        sy = (y*wt).sum()
-        t = (x-sx/s)/sigmay
-        stt = (t*t).sum()
-        slope = (t*y/sigmay).sum()/stt
-        yint = (sy - sx * slope)/s
-        cvm00 = 1./stt
-        cvm01 = -cvm00*sx/s
-        cvm11 = (1.0-sx*cvm01)/s
+        sx = (x * wt).sum()
+        sy = (y * wt).sum()
+        t = (x - sx / s) / sigmay
+        stt = (t * t).sum()
+        slope = (t * y / sigmay).sum() / stt
+        yint = (sy - sx * slope) / s
+        cvm00 = 1. / stt
+        cvm01 = -cvm00 * sx / s
+        cvm11 = (1.0 - sx * cvm01) / s
     fit = np.array([slope, yint])
 
     # resacle the covariance matrix if relative weighting is used
-    if relsigma is True:                # speed penalty if True
+    if relsigma is True:  # speed penalty if True
         rchisq, resids = _resids(x, y, sigmay, slope, yint)
         cvm00 *= rchisq
         cvm01 *= rchisq
@@ -251,25 +252,29 @@ def linfit(x, y, sigmay=None, relsigma=True, return_all=False):
     cvm = np.array([[cvm00, cvm01],
                     [cvm01, cvm11]])
 
-    if return_all is True:              # speed penalty if True
+    if return_all is True:  # speed penalty if True
         if relsigma is False:
             rchisq, resids = _resids(x, y, sigmay, slope, yint)
         # uncertainties in fitting parameters
         fiterr = np.sqrt(np.diag(cvm))
+
         class Bunch:
             def __init__(self, **kwds):
                 self.__dict__.update(kwds)
+
         lfinfo = Bunch(rchisq=rchisq, resids=resids, fiterr=fiterr)
         return fit, cvm, lfinfo
     else:
         return fit, cvm
 
-def _resids(x, y, sigmay, slope, yint): # speed penalty if called
-        resids = y - (yint + slope*x)
-        rchisq = ((resids/sigmay)**2).sum()/(x.size-2)
-        return rchisq, resids
+
+def _resids(x, y, sigmay, slope, yint):  # speed penalty if called
+    resids = y - (yint + slope * x)
+    rchisq = ((resids / sigmay) ** 2).sum() / (x.size - 2)
+    return rchisq, resids
+
 
 if __name__ == "__main__":
     import doctest
-    doctest.testmod()
 
+    doctest.testmod()
