@@ -134,7 +134,7 @@ slope `a` and the `y`-intercept `b`:
 >>> x = np.array([0, 1, 2, 3])
 >>> y = np.array([-1, 0.2, 0.9, 2.1])
 >>> fit, cvm = linfit(x, y)
->>> print("a = {0:0.2f}, b = {1:0.2f}".format(fit[0], fit[1]))
+>>> print('a = {0:0.2f}, b = {1:0.2f}'.format(fit[0], fit[1]))
 a = 1.00, b = -0.95
 
 When uncertainties sigmay are left unspecified, meaningful estimates of
@@ -143,7 +143,7 @@ are given by the square roots of the diagonals of the covariance matrix
 cvm, provided ``relsigma = True`` (the default state).
 
 >>> dfit = np.sqrt(np.diag(cvm))
->>> print("da = {0:0.2f}, db = {1:0.2f}".format(dfit[0], dfit[1]))
+>>> print('da = {0:0.2f}, db = {1:0.2f}'.format(dfit[0], dfit[1]))
 da = 0.07, db = 0.13
 
 A better practice is to supply estimates of the uncertainties in the
@@ -154,17 +154,17 @@ entered as an array.
 
 >>> dy = np.array([0.18, 0.13, 0.15, 0.17])
 >>> fit, cvm = linfit(x, y, sigmay=dy, relsigma=False)
->>> print("a = {0:0.2f}, b = {1:0.2f}".format(fit[0], fit[1]))
+>>> print('a = {0:0.2f}, b = {1:0.2f}'.format(fit[0], fit[1]))
 a = 0.98, b = -0.91
 >>> dfit = np.sqrt(np.diag(cvm))
->>> print("da = {0:0.2f}, db = {1:0.2f}".format(dfit[0], dfit[1]))
+>>> print('da = {0:0.2f}, db = {1:0.2f}'.format(dfit[0], dfit[1]))
 da = 0.08, db = 0.14
 
 Addition information about the fit is calculated and returned as a bunch
 dictionary if the optional argument ``return_all=True``.
 
 >>> fit, cvm, info = linfit(x, y, sigmay=dy, relsigma=False, return_all=True)
->>> print("reduced chi-squared = {0:0.2f}".format(info.rchisq))
+>>> print('reduced chi-squared = {0:0.2f}'.format(info.rchisq))
 reduced chi-squared = 1.21
 >>> print(info.resids)
 [-0.08856653  0.12781099 -0.1558115   0.06056602]
@@ -180,14 +180,14 @@ setting ``relsigma = True``.
 
 >>> dy = np.array([1.0, 0.75, 0.75, 1.25])
 >>> fit, cvm, info = linfit(x, y, sigmay=dy, relsigma=True, return_all=True)
->>> print("a = {0:0.2f}, b = {1:0.2f}".format(fit[0], fit[1]))
+>>> print('a = {0:0.2f}, b = {1:0.2f}'.format(fit[0], fit[1]))
 a = 0.97, b = -0.91
->>> print("da = {0:0.2f}, db = {1:0.2f}".format(info.fiterr[0], info.fiterr[1]))
+>>> print('da = {0:0.2f}, db = {1:0.2f}'.format(info.fiterr[0], info.fiterr[1]))
 da = 0.09, db = 0.16
 >>> da, db = np.sqrt(np.diag(cvm))
->>> print("da = {0:0.2f}, db = {1:0.2f}".format(da, db))
+>>> print('da = {0:0.2f}, db = {1:0.2f}'.format(da, db))
 da = 0.09, db = 0.16
->>> print("reduced chi-squared = {0:0.2f}".format(info.rchisq))
+>>> print('reduced chi-squared = {0:0.2f}'.format(info.rchisq))
 reduced chi-squared = 0.04
 
 In this case, the value rchisq is meaningless, because only the
