@@ -60,27 +60,27 @@ def linfit(x, y, sigmay=None, relsigma=True, return_all=False):
 
     See Also
     --------
-    numpy.polyfit : Least squares fit to polynomial.
-    numpy.linalg.lstsq : Least-squares solution to a linear matrix equation.
-    scipy.optimize.curve_fit : Non-linear least squares to fit a function, f,
+    | numpy.polyfit : Least squares fit to polynomial.
+    | numpy.linalg.lstsq : Least-squares solution to a linear matrix equation.
+    | scipy.optimize.curve_fit : Non-linear least squares to fit a function, f,
         to data.
-    scipy.stats.linregress : Linear regression with stats for social sciences.
-                
+    | scipy.stats.linregress : Linear regression with stats for social sciences.
+
     Notes
     -----
     By default, ``linfit`` returns optimal fitting parameters ``a = fit[0]``
     and ``b = fit[1]`` without weighting of the data.  In that case, linfit
     minimizes the squared error
-    
+
     .. math ::
-        E = \\sum_{i=0}^n [y_i - (a x_i + b)]^2
-   
+        E = \sum_{i=0}^n \left[y_i - (a x_i + b)\right]^2
+
     If `sigmay` is set equal to the uncertainties in the `y` data points, then
-    ``linfit`` minimizes the chi-squared sum 
-     
+    ``linfit`` minimizes the chi-squared sum
+
     .. math ::
-        \chi^2 = \\sum_{i=0}^n \\left[ \\frac{y_i-(a x_i + b)}{\\sigma_i}
-        \\right]^2
+        \chi^2 = \sum_{i=0}^n \left[ \frac{y_i-(a x_i + b)}{\sigma_i}
+        \right]^2
 
     where :math:`\sigma_i` is given by sigmay, the one-standard-deviation
     uncertainty (or "error") of :math:`y_i`.  `sigmay` can be either a single
