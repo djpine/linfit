@@ -1,3 +1,4 @@
+
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
@@ -17,5 +18,5 @@ setup(
     ],
     url="https://github.com/djpine/linfit",
     download_url="https://github.com/djpine/linfit",
-    version="2014.09.03",
+    version="2014.9.3",
 )
