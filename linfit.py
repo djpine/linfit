@@ -57,7 +57,7 @@ def linfit(x, y, sigmay=None, relsigma=True, return_all=False):
     | TypeError : if `x` and `y` have different lengths
     | TypeError : If `x` and `y` have 2 or fewer elements
     | TypeError : If sigmay length is not 1 or the same as `y`
-    
+
     See Also
     --------
     | numpy.polyfit : Least squares fit to polynomial.
